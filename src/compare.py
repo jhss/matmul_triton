@@ -5,6 +5,7 @@ import torch
 import triton
 from torch.nn import functional as F
 from torch.utils.cpp_extension import load
+from torch.utils.cpp_extension import load
 
 from triton_kernels import *
 # Step1 (Naive)
@@ -79,7 +80,7 @@ def benchmark(square_matrix_size, provider):
     if provider == 'torch': ms, min_ms, max_ms = triton.testing.do_bench(lambda: torch.matmul(a,b), quantiles=quantiles)
 
     gbps = lambda ms: 12* sz / ms * 1e-6
-    return gbps(ms), gbps(max_ms), gbps(min_ms)
+    return ms, gbps(max_ms), gbps(min_ms)
 
 benchmark.run(print_data=True, show_plots=True)
     

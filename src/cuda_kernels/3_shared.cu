@@ -1,5 +1,4 @@
-pragma once
-
+#include <torch/torch.h>
 #include <algorithm>
 #include <cstdio>
 #include <cstdlib>
@@ -54,4 +53,29 @@ __global__ void sgemm_shared_mem_block(int M, int N, int K, float alpha,
   }
   C[threadRow * N + threadCol] =
       alpha * tmp + beta * C[threadRow * N + threadCol];
+}
+
+torch::Tensor forward_shared(torch::Tensor A, torch::Tensor B) {
+    int M, K, N;
+
+    M = A.size(0);
+    K = A.size(1);
+    N = B.size(1);
+
+    torch::Tensor C = torch::zeros({M, N}).to(A.device());
+
+    dim3 gridDim(CEIL_DIV(M, 32), CEIL_DIV(N, 32));
+    dim3 blockDim(32, 32);
+    cudaFuncSetAttribute(sgemm_shared_mem_block<32>,
+                         cudaFuncAttributePreferredSharedMemoryCarveout,
+                         cudaSharedmemCarveoutMaxShared);
+    sgemm_shared_mem_block<32><<<gridDim, blockDim>>>(
+        M, N, K,
+        1.0, 
+        A.data_ptr<float>(), B.data_ptr<float>(), 
+        1.0,
+        C.data_ptr<float>()
+    );
+
+    return C;
 }
