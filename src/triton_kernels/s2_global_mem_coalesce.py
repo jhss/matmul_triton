@@ -12,8 +12,8 @@ def global_mem_coalsce_kernel(M, N, K, alpha, beta,
                               BLOCK_SIZE_M: tl.constexpr, BLOCK_SIZE_N: tl.constexpr, BLOCK_SIZE_K: tl.constexpr):
 
     pid = tl.program_id(axis=0)
-    row_idx = pid // M
-    col_idx = pid % M
+    row_idx = pid // N
+    col_idx = pid % N
 
     offset_k = tl.arange(0, BLOCK_SIZE_K)
 

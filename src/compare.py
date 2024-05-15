@@ -39,8 +39,8 @@ global_matmul = partial(matmul, matmul_fn=global_mem_coalsce_kernel, grid_type='
 shared_matmul = partial(matmul, matmul_fn=shared_mem_kernel, grid_type='2D')
 
 torch.manual_seed(0)
-a = torch.randn((512, 256), device='cuda', dtype=torch.float32)
-b = torch.randn((256, 512), device='cuda', dtype=torch.float32)
+a = torch.randn((2048, 2048), device='cuda', dtype=torch.float32)
+b = torch.randn((2048, 2048), device='cuda', dtype=torch.float32)
 output_naive  = matmul(a, b, matmul_fn=naive_kernel, grid_type='1D')
 output_global = matmul(a, b, matmul_fn=global_mem_coalsce_kernel, grid_type='1D')
 output_shared = matmul(a, b, matmul_fn=shared_mem_kernel, grid_type='2D')
