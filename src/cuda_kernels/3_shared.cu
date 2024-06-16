@@ -66,6 +66,7 @@ torch::Tensor forward_shared(torch::Tensor A, torch::Tensor B) {
 
     dim3 gridDim(CEIL_DIV(M, 32), CEIL_DIV(N, 32));
     dim3 blockDim(32*32);
+    // What's the purpose of this line?
     cudaFuncSetAttribute(sgemm_shared_mem_block<32>,
                          cudaFuncAttributePreferredSharedMemoryCarveout,
                          cudaSharedmemCarveoutMaxShared);
