@@ -15,15 +15,16 @@ cuda_matmul_kernel = load(name='cuda_matmul',
                           extra_cuda_cflags=['-O2'])
 
 torch.manual_seed(0)
-a = torch.randn((2048, 2048), device='cuda', dtype=torch.float32)
-b = torch.randn((2048, 2048), device='cuda', dtype=torch.float32)
+M, K, N = 2048, 2048, 2048
+a = torch.randn((M, K), device='cuda', dtype=torch.float32)
+b = torch.randn((K, N), device='cuda', dtype=torch.float32)
 
 # print("before: ", a[0:10, 0])
-with torch.autograd.profiler.profile(use_cuda=True) as prof:
-    result = cuda_matmul_kernel.forward_naive(a,b)
-# print("after: ", a[0:10, 0])
-print(prof.key_averages().table(sort_by='cuda_time_total', row_limit=10))
-
+# with torch.autograd.profiler.profile(use_cuda=True) as prof:
+#     result = cuda_matmul_kernel.forward_naive(a,b)
+# # print("after: ", a[0:10, 0])
+# print(prof.key_averages().table(sort_by='cuda_time_total', row_limit=10))
+result_torch = torch.matmul(a,b)
 with torch.autograd.profiler.profile(use_cuda=True) as prof:
     result2 = cuda_matmul_kernel.forward_global_coalesce(a,b)
 print(prof.key_averages().table(sort_by='cuda_time_total', row_limit=10))
