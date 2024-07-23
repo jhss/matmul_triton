@@ -34,7 +34,7 @@ torch::Tensor forward_global_coalesce(torch::Tensor A, torch::Tensor B) {
     torch::Tensor C = torch::zeros({M, N}).to(A.device());
 
     dim3 gridDim(CEIL_DIV(M, 32), CEIL_DIV(N, 32));
-    dim3 blockDim(32, 32);
+    dim3 blockDim(32 *32);
     sgemm_global_mem_coalesce<32><<<gridDim, blockDim>>>(
         M, N, K,
         1.0, 
