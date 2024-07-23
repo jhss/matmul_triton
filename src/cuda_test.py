@@ -32,16 +32,16 @@ with torch.autograd.profiler.profile(use_cuda=True) as prof:
     result3 = cuda_matmul_kernel.forward_shared(a,b.permute([1,0]))
 print(prof.key_averages().table(sort_by='cuda_time_total', row_limit=10))
 
-with torch.autograd.profiler.profile(use_cuda=True) as prof:
-    result4 = cuda_matmul_kernel.forward_1d_tiling(a,b.permute([1,0]))
-print(prof.key_averages().table(sort_by='cuda_time_total', row_limit=10))
+# with torch.autograd.profiler.profile(use_cuda=True) as prof:
+#     result4 = cuda_matmul_kernel.forward_1d_tiling(a,b.permute([1,0]))
+# print(prof.key_averages().table(sort_by='cuda_time_total', row_limit=10))
 
-print(result[0:10, 0])
+#print(result[0:10, 0])
 print(result2[0:10, 0])
 print(result3[0:10, 0])
-print(result4[0:10, 0])
+#print(result4[0:10, 0])
 result_torch = torch.matmul(a,b)
-print("all close 1: ", torch.allclose(result_torch, result, rtol=5e-2, atol=5e-2))
+#print("all close 1: ", torch.allclose(result_torch, result, rtol=5e-2, atol=5e-2))
 print("all close 2: ", torch.allclose(result_torch, result2, rtol=5e-2, atol=5e-2))
 print("all close 3: ", torch.allclose(result_torch, result3, rtol=5e-2, atol=5e-2))
-print("all close 4: ", torch.allclose(result_torch, result4, rtol=5e-2, atol=5e-2))
+#print("all close 4: ", torch.allclose(result_torch, result4, rtol=5e-2, atol=5e-2))

@@ -21,8 +21,8 @@ __global__ void sgemm_shared_mem_block(int M, int N, int K, float alpha,
   __shared__ float Bs[BLOCKSIZE * BLOCKSIZE];
 
   // the inner row & col that we're accessing in this thread
-  const uint threadCol = threadIdx.x % BLOCKSIZE;
-  const uint threadRow = threadIdx.x / BLOCKSIZE;
+  const uint threadCol = (blockDim.x*threadIdx.y + threadIdx.x) % BLOCKSIZE;
+  const uint threadRow = (blockDim.x*threadIdx.y + threadIdx.x) / BLOCKSIZE;
 
   // advance pointers to the starting positions
   A += cRow * BLOCKSIZE * K;                    // row=cRow, col=0
